@@ -13,6 +13,7 @@ import AddCarmanufacturer from './components/carmanufacture/AddCarmanufacturer';
 import EditCarmanufacturer from './components/carmanufacture/EditCarmanufacturer';
 import ListCarmanufacturer from './components/carmanufacture/ListCarmanufacturer';
 import ListCar from './components/car/ListCar';
+import EditCar from './components/car/EditCar';
 
 import {BrowserRouter as Router,Route} from 'react-router-dom'
 import { setCurrentUser, logoutUser } from "./actions/userAction";
@@ -51,7 +52,8 @@ function App() {
         <Route exact path='/EditDriver/:id' component={EditDriver}/>
         <Route exact path='/AddCar' component={AddCar}/>
         <Route exact path='/ListCar' component={ListCar}/>
-        
+        <Route exact path='/EditCar/:id' component={EditCar}/>
+
         <Route exact path='/AddCarmanufacturer' component={AddCarmanufacturer}/>
         <Route exact path='/ListCarmanufacturer' component={ListCarmanufacturer}/>
         <Route exact path='/EditCarmanufacturer/:id' component={EditCarmanufacturer}/>

@@ -3,7 +3,11 @@ import classnames from 'classnames';
 import {connect} from 'react-redux'
 import {geteditCar,posteditCar} from '../../actions/carAction'
 import isEmpty from 'is-empty';
-class EditCar extends Component {
+import {getDriver} from '../../actions/driverAction'
+
+
+
+class EditDriver extends Component {
     constructor(props) {
         super(props);
         this.state={
@@ -12,79 +16,72 @@ class EditCar extends Component {
             producer:'',
             licenseplate:'',  
             errors: {},
-            DriverId:''
+            driver:''
         }
     }
+   
     onChange=e=>{
-        switch (e.target.name) {
-            case 'numberofSeats':
-              this.setState({ numberofSeats: e.target.value});
-              
-              break;
-              case 'DriverId':
-              this.setState({ DriverId: e.target.value});
-              
-              break;
-            default:
+       
               this.setState({ [e.target.name]: e.target.value });
-          }
+        
     }
     onSubmit=e=>{
         e.preventDefault();
      
-          const {fullName,email,phone,address,DOB,IDcardnumber,driverImage}=this.state;
-          let formData = new FormData();
-  
-          formData.append('fullName', fullName);
-          formData.append('email', email);
-          formData.append('phone', phone);
-          formData.append('address', address);
-          formData.append('DOB', DOB);
-          formData.append('IDcardnumber', IDcardnumber);
-          formData.append('driverImage', driverImage);
-          
-          this.props.postEditCar(this.props.match.params.id,formData, this.props.history);
+        const {numberofSeats,manufaturingYear,producer,licenseplate,driver}=this.state;
+            const EditCar=({
+                numberofSeats,manufaturingYear,producer,licenseplate,driver
+
+            })
+          this.props.posteditCar(this.props.match.params.id, EditCar,this.props.history);
     }
     componentDidMount(){
         if (this.props.match.params.id) {
             this.props.geteditCar(this.props.match.params.id);
           }
+        
+
     }
     componentWillReceiveProps(nextProps) {
         if (nextProps.errors) {
             this.setState({ errors: nextProps.errors });
           }
-        if(nextProps.driver.drivers){
-            const driver=nextProps.driver.drivers;
-            driver.fullName = !isEmpty(driver.fullName) ? driver.fullName : '';
-            driver.email = !isEmpty(driver.email) ? driver.email : '';
-            driver.phone = !isEmpty(driver.phone) ? driver.phone : '';
-            driver.address = !isEmpty(driver.address) ? driver.address : '';
-            driver.DOB = !isEmpty(driver.DOB) ? driver.DOB : '';
-            driver.IDcardnumber = !isEmpty(driver.IDcardnumber) ? driver.IDcardnumber : '';
+        if(nextProps.car.cars){
+            const car=nextProps.car.cars;
+          console.log(car);
+          
+            car.driver = !isEmpty(car.driver) ? car.driver : '';
+            car.numberofSeats = !isEmpty(car.numberofSeats) ? car.numberofSeats : '';
+            car.manufaturingYear = !isEmpty(car.manufaturingYear) ? car.manufaturingYear : '';
+            car.producer = !isEmpty(car.producer) ? car.producer : '';
+            car.licenseplate = !isEmpty(car.licenseplate) ? car.licenseplate : '';
             this.setState({
-                fullName:driver.fullName,
-                email:driver.email,
-                phone:driver.phone,
-                address:driver.address,
-                DOB:driver.DOB,
-                IDcardnumber:driver.IDcardnumber,
+                numberofSeats:car.numberofSeats,
+                driver:car.driver,
+                manufaturingYear:car.manufaturingYear,
+                producer:car.producer,
+                licenseplate:car.licenseplate
+               
             })
         }
       }
+     
     render() {
         const { errors } = this.state;
-      
-        
-        
+        const {drivers}=this.props.driver
+        const {cars}=this.props.car
+        const options=  this.props && this.props.driver.drivers.length > 0 ?this.props.driver.drivers.map((exp,index) => {
+            console.log(exp)
+            return <option value={exp._id} key={index}  >{exp.fullName} + {index}</option>
+        }):<option/>
         return (
             
-            <div className='Driver'>
+            <div className='Add Car'>
             <div className='container'>
-                <div className='col-md-10 m-auto'>
-                <h4 className="modal-title">
-                EDIT CAR
-                </h4>
+       
+           
+                <div className='col-md-8 m-auto'>
+                <h1>EDIT CAR</h1>
                 <br/>
                 <form noValidate onSubmit={this.onSubmit}>
                
@@ -92,124 +89,93 @@ class EditCar extends Component {
                         <br/>
                         <div className='row'>
                             <div className='col-md-4'>
-                              <label>FullName:</label>
+                              <label>Driver</label>
                             </div>
                             <div className='col-md-8'>
-                                <input type='text'
-                                    name='fullName' onChange={this.onChange}
-                                    value={this.state.fullName} 
-                                    className={classnames("form-control", {
-                                    'is-invalid': errors.fullName
-                                })}
-                                />
-                                   {errors.fullName && (<div className='invalid-feedback'>{errors.fullName}</div>)}
-                            </div>
-                        </div>
-                        <br/>
-                        <div className='row'>
-                            <div className='col-md-4'>
-                              <label>Image:</label>
-                            </div>
-                            <div className='col-md-8'>
-                                <input type='file'
-                                    name='driverImage' 
-                                    onChange={this.onChange}
-                                   
-                                   className='form-control'
-                                />
-                                
-                            </div>
-                        </div>
+                     <select 
+                            value={this.state.driver }
+                             onChange={this.onChange}
+                             className='form-control'
+                             name="driver"
+                             >
+                             <option value=''>Ban cam chon tai xe</option>
+                             {options}
                         
+                             </select>                                
+                                   
+                             
+                            </div>
+                        </div>
                         <br/>
                         <div className='row'>
                             <div className='col-md-4'>
-                              <label>Email:</label>
+                              <label>Number of Seats:</label>
+                            </div>
+                            <div className='col-md-8'>
+                            <select value={this.state.numberofSeats} onChange={this.onChange} className='form-control' >
+                                 <option value="">Chọn loại xe</option>
+                                <option value="16">16 chỗ</option>
+                                <option value="32">32 chỗ</option>
+                                <option value="49">49 chỗ</option>
+                                <option value="50">50 chỗ</option>
+                            </select>  
+                                     
+                            </div>
+                        </div>
+                        <br/>
+                        <div className='row'>
+                            <div className='col-md-4'>
+                              <label>manufaturingYear:</label>
                             </div>
                             <div className='col-md-8'>
                                 <input type='text'  
-                                    name='email' onChange={this.onChange}
-                                    value={this.state.email} 
+                                    name='manufaturingYear' onChange={this.onChange}
+                                    value={this.state.manufaturingYear} 
                                     className={classnames("form-control", {
-                                    'is-invalid': errors.email 
+                                    'is-invalid': ''
                                 })}
                                 />
-                                 {errors.email && (<div className='invalid-feedback'>{errors.email}</div>)}
+                           {/* {errors.manufaturingYear && (<div className='invalid-feedback'>{errors.manufaturingYear}</div>)} */}
                                 
                             </div>
                         </div>
                         <br/>
+                       
                         <div className='row'>
                             <div className='col-md-4'>
-                              <label>birthday:</label>
-                            </div>
-                            <div className='col-md-8'>
-                           
-                               <input type='date'  
-                                    name='DOB' onChange={this.onChange}
-                                   
-                                    value={this.state.DOB} 
-                                  
-                                   className='form-control'
-                                ></input>
-                              
-                            </div>
-                        </div>
-                        <br/>
-                        <div className='row'>
-                            <div className='col-md-4'>
-                              <label>Address:</label>
+                              <label>Producer:</label>
                             </div>
                             <div className='col-md-8'>
                                 <input type='text'
-                                    name='address' onChange={this.onChange}
-                                    value={this.state.address} 
+                                    name='producer' onChange={this.onChange}
+                                    value={this.state.producer} 
                                     className={classnames("form-control", {
-                                    'is-invalid': errors.address
+                                    'is-invalid': ''
                                 })}
                                 />
-                                {errors.address && (<div className='invalid-feedback'>{errors.address}</div>)}
+                            
                             </div>
                         </div>
                         <br/>
                         <div className='row'>
                             <div className='col-md-4'>
-                              <label>Phone:</label>
+                              <label>Licenseplate:</label>
                             </div>
                             <div className='col-md-8'>
                                 <input type='text' 
-                                    name='phone' onChange={this.onChange}
-                                    value={this.state.phone} 
+                                    name='licenseplate' onChange={this.onChange}
+                                    value={this.state.licenseplate} 
                                     className={classnames("form-control", {
-                                    'is-invalid': errors.phone 
+                                    'is-invalid': ''
                                 })}
                                 />
-                                   {errors.phone && (<div className='invalid-feedback'>{errors.phone}</div>)}
-                                   
-                            </div>
-                        </div>
-                        <br/>
-                        <div className='row'>
-                            <div className='col-md-4'>
-                              <label>IDcardnumber:</label>
-                            </div>
-                            <div className='col-md-8'>
-                                <input type='text' 
-                                    name='IDcardnumber' onChange={this.onChange}
-                                    value={this.state.IDcardnumber} 
-                                    className={classnames("form-control", {
-                                    'is-invalid': errors.IDcardnumber 
-                                })}
-                                />
-                                   {errors.IDcardnumber && (<div className='invalid-feedback'>{errors.IDcardnumber}</div>)}
                                    
                             </div>
                         </div>
                         <br/>
                       
                         <br/>
-                 
-                <button type="submit" className="btn btn-danger">Sua Task</button>
+                        <button type="submit" className="btn btn-primary btn-lg btn-block">SAVE</button>
 
                 </form>
                        
@@ -224,7 +190,8 @@ class EditCar extends Component {
 const mapStateToProps = (state) => {
     return {
         errors: state.errors,
-        driver:state.driver
+        driver:state.driver,
+        car:state.car
     }
 }
-export default connect(mapStateToProps,{geteditCar,posteditCar})(EditCar);
+export default connect(mapStateToProps,{geteditCar,posteditCar,getDriver})(EditDriver);

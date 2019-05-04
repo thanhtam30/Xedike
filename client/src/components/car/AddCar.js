@@ -4,18 +4,18 @@ import {connect} from 'react-redux';
 import {addCar} from '../../actions/carAction'
 import {getDriver} from '../../actions/driverAction'
 
-import Select from 'react-select';
+
 
 class AddCar extends Component {
     constructor(props) {
         super(props);
         this.state={
-            numberofSeats:'16',
+            numberofSeats:'',
             manufaturingYear:'',        
             producer:'',
             licenseplate:'',  
             errors: {},
-            dirver:null
+            driver:''
         }
     
     }
@@ -23,9 +23,10 @@ class AddCar extends Component {
         this.props.getDriver();
       }
     onChange = e => {
-       
-       
-              this.setState({ [e.target.name]: e.target.value });
+        
+       console.log(e.target.name)
+       console.log(e.target.value)
+               this.setState({ [e.target.name]: e.target.value });
           
           
       };
@@ -44,14 +45,6 @@ class AddCar extends Component {
         const newCar={numberofSeats,manufaturingYear,producer,licenseplate,driver}
         console.log(newCar)
         this.props.addCar(newCar, this.props.history)
-
-        
-      
-        
-       
-       
-        
-        
     }
     componentWillReceiveProps(nextProps) {
         if (nextProps.errors) {
@@ -63,17 +56,17 @@ class AddCar extends Component {
     render() {
         const {errors}=this.state
         const {drivers}=this.props.driver
-        const options=  this.props && this.props.driver.drivers.length > 0 ?this.props.driver.drivers.map((exp,index) => (   
-            <option value={exp._id} key={index}>{exp.fullName}</option>
-
-           )):<option/>
+        const options=  this.props && this.props.driver.drivers.length > 0 ?this.props.driver.drivers.map((exp,index) => {
+            console.log(exp)
+            return <option value={exp._id} key={index}>{exp.fullName} + {index}</option>
+        }):<option/>
       
           
         
-        console.log(this.props.driver.drivers);
+        
         
         return (
-            <div className='SignUp'>
+            <div className='Add Car'>
                 <div className='container'>
            
                
@@ -89,22 +82,18 @@ class AddCar extends Component {
                                   <label>Driver</label>
                                 </div>
                                 <div className='col-md-8'>
-                                {/* <select 
+                         <select 
                                 value={this.state.driver }
-                                onChange={this.onChange}
-                                className='form-control'
-                                >
-                                <option value=''>Ban cam chon tai xe</option>
-                                <option value={drivers._id}>{drivers.fullName}</option>
-                                </select>                                
-                                      */}
-                                      <Select
-                                    value={this.state.driver }
-                                
-                                
-                    options={this.props.driver.drivers.map(t=>({value: t._id, label: t.fullName}))}
-                    placeholder="None Selected"
- />
+                                 onChange={this.onChange}
+                                 className='form-control'
+                                 name="driver"
+                                 >
+                                 <option value=''>Ban cam chon tai xe</option>
+                                 {options}
+                            
+                                 </select>                                
+                                       
+                                 
                                 </div>
                             </div>
                             <br/>
@@ -113,13 +102,14 @@ class AddCar extends Component {
                                   <label>Number of Seats:</label>
                                 </div>
                                 <div className='col-md-8'>
-                                {/* <select value={this.state.numberofSeats} onChange={this.onChange} className='form-control' >
+                                { <select value={this.state.numberofSeats} onChange={this.onChange} className='form-control' >
+                                     <option value="">Chọn loại xe</option>
                                     <option value="16">16 chỗ</option>
                                     <option value="32">32 chỗ</option>
                                     <option value="49">49 chỗ</option>
                                     <option value="50">50 chỗ</option>
-                                </select>  */}
-                                        {/* {errors.numberofSeats && (<div className='invalid-feedback'>{errors.numberofSeats}</div>)} */}
+                                </select>  }
+                                        
                                 </div>
                             </div>
                             <br/>
